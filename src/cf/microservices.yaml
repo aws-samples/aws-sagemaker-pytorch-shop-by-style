@@ -1,0 +1,159 @@
+Description: Microservices and APIs that support the 'Shop-by-Style' blog prototype
+Parameters:
+  Subnet1:
+    Description: Valid Subnet
+    Type: 'AWS::EC2::Subnet::Id'
+    ConstraintDescription: Must be the name of an existing Subnet in same region.
+  Subnet2:
+    Description: Valid Subnet
+    Type: 'AWS::EC2::Subnet::Id'
+    ConstraintDescription: Must be the name of an existing Subnet in same region.
+  Subnet3:
+    Description: Valid Subnet
+    Type: 'AWS::EC2::Subnet::Id'
+    ConstraintDescription: Must be the name of an existing Subnet in same region.
+  NeptuneDBClusterEndpoint:
+    Description: Neptune DB Cluster Endpoint
+    Type: String
+  NeptuneDBClusterPort:
+    Description: Neptune DB Cluster Port
+    Type: String
+  NeptuneSG:
+    Description: Neptune Security Group
+    Type: String
+Resources:
+  LambdaExecutionRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      ManagedPolicyArns:
+        - 'arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole'
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Action:
+              - 'sts:AssumeRole'
+            Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+  SimilaritySearchLambdaMicroservicePermissionTest:
+    Type: 'AWS::Lambda::Permission'
+    Properties:
+      Action: 'lambda:invokeFunction'
+      Principal: apigateway.amazonaws.com
+      FunctionName: !Ref SimilaritySearch
+      SourceArn: !Sub 
+        - >-
+          arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${__ApiId__}/${__Stage__}/*/catalog
+        - __Stage__: '*'
+          __ApiId__: !Ref ServerlessRestApi
+  ServerlessRestApiProdStage:
+    Type: 'AWS::ApiGateway::Stage'
+    DependsOn: [ServerlessRestApiDeploymentef8584eec9,ServerlessRestApi]
+    Properties:
+      DeploymentId: !Ref ServerlessRestApiDeploymentef8584eec9
+      RestApiId: !Ref ServerlessRestApi
+      CacheClusterEnabled: 'true'
+      CacheClusterSize: '1.6'
+      MethodSettings: 
+        - ResourcePath: "/*"
+          HttpMethod: '*'
+          CacheTtlInSeconds: 3600
+          CachingEnabled: 'true'
+      StageName: Prod
+  SimilaritySearchPermission:
+    Type: 'AWS::Lambda::Permission'
+    Properties:
+      Action: 'lambda:InvokeFunction'
+      Principal: apigateway.amazonaws.com
+      FunctionName: !GetAtt 
+        - SimilaritySearch
+        - Arn
+      SourceArn: !Sub 'arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:*/*/*/*'
+  ServerlessRestApiDeploymentef8584eec9:
+    Type: 'AWS::ApiGateway::Deployment'
+    Properties:
+      RestApiId: !Ref ServerlessRestApi
+      Description: 'RestApi deployment id: ef8584eec937e78720d42b5535c1f3865bfdedb3'
+      StageDescription:
+        CacheTtlInSeconds: 3600
+        CacheClusterEnabled: 'true'
+        CacheClusterSize: '1.6'
+        TracingEnabled: 'true'
+      StageName: Stage
+  SimilaritySearch:
+    Type: 'AWS::Lambda::Function'
+    Properties:
+      Code:
+        S3Bucket: reinvent2018-sagemaker-pytorch
+        S3Key: cloudformation/blog/shop-by-style/38810787021a45f9f9d5abd4767f86eb
+      Description: ''
+      VpcConfig:
+        SubnetIds:
+          - !Ref Subnet1
+          - !Ref Subnet2
+          - !Ref Subnet3
+        SecurityGroupIds:
+          - !Ref NeptuneSG
+      Tags:
+        - Value: SAM
+          Key: 'lambda:createdBy'
+      MemorySize: 128
+      Environment:
+        Variables:
+          DB_ENDPOINT: !Ref NeptuneDBClusterEndpoint
+          DBPORT: !Ref NeptuneDBClusterPort
+      Handler: SimilaritySearch/index.handler
+      Role: !GetAtt 
+        - LambdaExecutionRole
+        - Arn
+      Timeout: 60
+      Runtime: nodejs6.10
+  ServerlessRestApi:
+    Type: 'AWS::ApiGateway::RestApi'
+    DependsOn: 
+      - SimilaritySearch
+    Properties:
+      Body:
+        info:
+          version: '1.0'
+          title: !Ref 'AWS::StackName'
+        paths:
+          /catalog:
+            x-amazon-apigateway-any-method:
+              parameters:
+              - name: "n"
+                in: "query"
+                required: false
+                type: "string"
+              - name: "img"
+                in: "query"
+                required: false
+                type: "string"
+              responses: {}
+              x-amazon-apigateway-integration:
+                uri: !Sub >-
+                          arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${SimilaritySearch.Arn}/invocations
+                passthroughBehavior: "when_no_match"
+                httpMethod: "POST"
+                cacheKeyParameters:
+                - "method.request.querystring.img"
+                - "method.request.querystring.n"
+                type: "aws_proxy"  
+        swagger: '2.0'
+  SimilaritySearchLambdaMicroservicePermissionProd:
+    Type: 'AWS::Lambda::Permission'
+    Properties:
+      Action: 'lambda:invokeFunction'
+      Principal: apigateway.amazonaws.com
+      FunctionName: !Ref SimilaritySearch
+      SourceArn: !Sub 
+        - >-
+          arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${__ApiId__}/${__Stage__}/*/catalog
+        - __Stage__: Prod
+          __ApiId__: !Ref ServerlessRestApi
+Outputs:
+  ServerlessRestApiInvokeURL:
+    Value: !Sub "${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com"
+    Export:
+      Name: ServerlessRestApiInvokeURL

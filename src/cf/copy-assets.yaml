@@ -1,0 +1,40 @@
+Transform: S3Objects
+Resources:
+  WebAssetsBucket:
+    Type: AWS::S3::Bucket
+  SampleWebPage:
+    Type: AWS::S3::Object
+    Properties:
+      Source:
+        Bucket: 'reinvent2018-sagemaker-pytorch'
+        Key: web/sample-web/shoerack.html
+      Target:
+        Bucket: !Ref WebAssetsBucket
+        Key: shoerack.html
+  SampleWebPageCSS:
+    Type: AWS::S3::Object
+    Properties:
+      Source:
+        Bucket: 'reinvent2018-sagemaker-pytorch'
+        Key: web/sample-web/css/style.css
+      Target:
+        Bucket: !Ref WebAssetsBucket
+        Key: css/style.css
+  GraphVisWebPage:
+    Type: AWS::S3::Object
+    Properties:
+      Source:
+        Bucket: 'reinvent2018-sagemaker-pytorch'
+        Key: web/graphvis/graphvis.html
+      Target:
+        Bucket: !Ref WebAssetsBucket
+        Key: graphvis.html
+Outputs:
+  WebAssetsBucket:
+    Value: !Ref WebAssetsBucket
+    Export:
+      Name: WebAssetsBucket
+  S3WebAssetsDomain:
+    Value: !GetAtt WebAssetsBucket.DomainName
+    Export: 
+      Name: "S3WebAssetsDomain"

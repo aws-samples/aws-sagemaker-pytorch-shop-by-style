@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title> </title>
+         <link rel="stylesheet" href="css/style.css" />
+    </head>
+    <body>
+      <script
+        src="https://code.jquery.com/jquery-3.3.1.min.js"
+        integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+        crossorigin="anonymous"></script>
+      <script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js"></script>
+      <script src="https://unpkg.com/imagesloaded@4/imagesloaded.pkgd.min.js"></script>
+      
+      <div id="container">
+        <div class="grid"></div>
+        <div class="info" id="info0"></div>
+      </div>
+      
+      <script>
+          const img_loc = "https://s3-us-west-2.amazonaws.com/reinvent2018-sagemaker-pytorch/data/raw/";
+          var selectedImage = "Boots/Knee%20High/Anne%20Klein/8059298.310.jpg";
+          var selectedImageId = "img0";
+          const N = 7;
+          
+          const urlParams = new URLSearchParams(window.location.search);
+          //const API_ENDPOINT =  'https://w2ga422zm5.execute-api.us-east-1.amazonaws.com';
+          const API_ENDPOINT = 'https://'+urlParams.get('provider');
+          
+          function get_query(img, topN) {
+            return API_ENDPOINT+"/Prod/catalog?img="+img+"&n="+topN;
+          }
+          
+          const data = new Array(N)
+          function save_data(i, brand, category, subcategory, sku){
+            
+            data[i] = {"CATEGORY": category, "SUBCATEGORY": subcategory, "BRAND": brand, "SKU": sku};
+            
+          }
+         
+           //init masonry grid 
+          $(window).on("load", function() {
+            
+            var $grid = $('.grid');
+            var q= get_query(selectedImage,N);             
+            $.get(q, function(response) {
+              
+                $(".result").html(response);
+                var data = response['similarTo'];
+                
+                for (var i in data){
+                  
+                  var cl = (i == 0) ? 'primary-item' : 'similar-item';
+                  var div = document.createElement("div");
+                  div.className = cl;
+                  
+                  var img = document.createElement("img");
+                  img.id = i.toString();
+                  img.src = img_loc+data[i].img;
+                  
+                  save_data(i, data[i].brand, data[i].category, data[i].subcategory, data[i].sku);
+                  
+                  $(div).append(img);
+                  $grid.append(div);
+                  
+                }
+                   
+              });
+              
+              $grid.imagesLoaded( function(){
+                $primaryItem = $grid.masonry({
+                                  itemSelector : '.primary-item',
+                                  columnWidth : 100,
+                                  percentPosition: true,
+                                  horizontalOrder: true
+                                });
+                                
+                $secondaryItem = $grid.masonry({
+                                  itemSelector : '.similar-item',
+                                  columnWidth : 50,
+                                  percentPosition: true,
+                                  horizontalOrder: true
+                                });
+
+              });
+          });
+      
+         $(".grid").on("mouseover", "img", function(){
+           
+           var idx = parseInt(this.id, 10);
+           $("#info0").text("CATEGORY: "+data[idx].CATEGORY+" | "+
+                           "SUBCATEGORY: "+data[idx].SUBCATEGORY+" | "+
+                           "BRAND: "+data[idx].BRAND+" | "+
+                           "SKU: "+data[idx].SKU);
+           
+         });
+         
+         $(".grid").on("click", "img", function(){
+
+            selectedImage = this.src.replace(img_loc,"");   
+            selectedImageId = this.id;
+            var q= get_query(selectedImage,N);
+            $.get(q, function(response) {
+              
+              $(".result").html(response);
+              var data = response['similarTo'];
+              
+              if (data.length <= 0)
+              {
+                $("#"+selectedImageId).css("opacity", "0.7");
+                $("#"+selectedImageId).css("filter", "grayscale(100%)");
+              }
+              else {
+                for (var i in data){
+                  
+                  $("#"+i.toString()).attr("src", img_loc+data[i].img);
+                  $("#"+i.toString()).css("opacity", "");
+                  $("#"+i.toString()).css("filter", "");
+                  
+                  save_data(i, data[i].brand, data[i].category, data[i].subcategory, data[i].sku);
+                    
+                }
+              }
+              
+              return false;
+            });
+         });
+
+        </script>
+
+    </body>
+</html>

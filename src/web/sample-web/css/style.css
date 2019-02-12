@@ -1,0 +1,38 @@
+.grid  {
+  margin-left: 10%;
+  margin-right: 10%;
+  margin-top: 10%;
+  margin-bottom: 10%;
+}
+
+#info0 {
+  font-weight: bold;
+  font-family: "Courier New";
+  text-align: center;
+  font-size: 15px;
+  color: silver;
+  width:85%;
+  z-index: 1;
+  float:left;
+  margin-top: 1%;
+}
+
+.primary-item img {
+  height: auto;
+  width: 50.2%;
+  margin: 0.3%;
+  z-index: -1;
+  float:left;
+}
+
+.similar-item img {
+  height: auto;
+  width: 16.3%;
+  margin: 0.3%;
+  z-index: -1;
+  float:left;
+}
+
+body {
+    background-color: black;
+}

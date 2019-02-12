@@ -1,0 +1,132 @@
+<html>
+<head>
+    <script type="text/javascript" src="https://unpkg.com/vis@4.20.0/dist/vis.js"></script>
+    <script
+        src="https://code.jquery.com/jquery-3.3.1.min.js"
+        integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+        crossorigin="anonymous"></script>
+    <link href="https://unpkg.com/vis@4.20.0/dist/vis.css" rel="stylesheet" type="text/css" />
+
+    <style type="text/css">
+        #mynetwork {
+            width: 600px;
+            height: 400px;
+            border: 1px solid lightgray;
+        }
+    </style>
+</head>
+<body>
+    <div id="mynetwork"></div>
+    
+    <script type="text/javascript">
+        
+        const img_loc = "https://s3-us-west-2.amazonaws.com/reinvent2018-sagemaker-pytorch/data/raw/";
+        var selectedImage = "Boots/Knee%20High/Anne%20Klein/8059298.310.jpg";
+        const N = 7;
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const API_ENDPOINT = 'https://'+urlParams.get('provider');
+                  
+        function get_query(img, topN) {
+            return API_ENDPOINT+"/Prod/catalog?img="+img+"&n="+topN;
+        }
+            
+        var nodes = [];
+        var edges = [];
+        
+        function save_node(img, l){
+            nodes.push({id: nodes.length, shape:'circularImage', image: img, label: l, font:{size: 8}});
+        }
+            
+        function save_edge(f,t,s){
+            const sim_scaled = Math.pow(1/s,10);
+            edges.push({from:f, to : t, width: sim_scaled, color:{opacity:sim_scaled/10}});
+        }
+        
+        var currentnode = 0;
+                    
+        $(window).on("load", function() {
+                    
+            var q= get_query(selectedImage,N);             
+            $.get(q, function(response) {
+                      
+                $(".result").html(response);
+                var data = response['similarTo'];
+                
+                for (var i in data){
+
+                    img_id = data[i].img;
+        
+                    if (img_id != selectedImage){
+                        save_node(img_loc+img_id, data[i].brand[0]+"\n"+data[i].sku[0]); 
+                        save_edge(currentnode, nodes.length-1, data[i].score);
+                    }
+                }
+                    
+                var visnodes = new vis.DataSet(nodes);
+                var visedges = new vis.DataSet(edges);
+                var container = document.getElementById('mynetwork');
+                
+                var graphdata = {
+                    nodes: visnodes,
+                    edges: visedges
+                };
+                    
+                var options = {
+                    nodes: {
+                      borderWidth:0,
+                      size:30,
+            	      color: {
+                        border: 'lightgray',
+                        background: 'lightgray'
+                      },
+                      font:{color:'black'}
+                    },
+                    edges: {
+                      color: 'lightgray'
+                    }
+                };
+                    
+                var network = new vis.Network(container, graphdata, options);
+            
+                network.on("click", function (params) {
+            
+                    params.event = "[original event]";
+                    currentnode = params.nodes[0]
+                    selectedImage = nodes[currentnode].image.replace(img_loc,'')
+                    
+                    var q= get_query(selectedImage,N);             
+                    $.get(q, function(response) {
+                              
+                        $(".result").html(response);
+                        var data = response['similarTo'];
+                        
+                        nodes_startidx = nodes.length;
+                        edges_startidx = edges.length;
+                        
+                        var img_id;
+                        for (var i in data){
+        
+                            img_id = data[i].img;
+        
+                            if (img_id != selectedImage){
+                                save_node(img_loc+img_id, data[i].brand[0]+"\n"+data[i].sku[0]); 
+                                save_edge(currentnode, nodes.length-1, data[i].score);
+                            }
+                        }
+                            
+                        visnodes.update(nodes.slice(nodes_startidx, nodes.length-1));
+                        visedges.update(edges.slice(edges_startidx, edges.length-1));
+                        network.redraw();
+
+                    });
+                    
+                });
+            });
+        });
+        
+        
+        
+        </script>
+    </body>
+</html>

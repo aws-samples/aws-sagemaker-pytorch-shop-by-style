@@ -1,0 +1,106 @@
+Resources:
+  S3Macros:
+    Type: 'AWS::CloudFormation::Stack'
+    Properties:
+      TemplateURL: !Join 
+        - ''
+        - - >-
+            https://s3-us-west-2.amazonaws.com/reinvent2018-sagemaker-pytorch/cloudformation/blog/shop-by-style/macro.template
+      TimeoutInMinutes: '30'
+  WebAssets:
+    Type: 'AWS::CloudFormation::Stack'
+    DependsOn: S3Macros
+    Properties:
+      TemplateURL: !Join 
+        - ''
+        - - >-
+            https://s3-us-west-2.amazonaws.com/reinvent2018-sagemaker-pytorch/cloudformation/blog/shop-by-style/copy-assets.yaml
+      TimeoutInMinutes: '30'
+  CloudFrontOAI:
+    Type: 'AWS::CloudFront::CloudFrontOriginAccessIdentity'
+    Properties:
+      CloudFrontOriginAccessIdentityConfig:
+        Comment: OAI for shop-by-style web asset origin
+  CloudFrontWebDistribution:
+    Type: 'AWS::CloudFront::Distribution'
+    DependsOn:
+      - WebAssets
+      - CloudFrontOAI
+    Properties:
+      DistributionConfig:
+        Origins:
+          - Id: ShopByStyleOrigin
+            DomainName: !GetAtt 
+              - WebAssets
+              - Outputs.S3WebAssetsDomain
+            S3OriginConfig:
+              OriginAccessIdentity: !Join 
+                - ''
+                - - origin-access-identity/cloudfront/
+                  - !Ref CloudFrontOAI
+        Enabled: 'true'
+        DefaultRootObject: 'shoerack.html'
+        DefaultCacheBehavior:
+          AllowedMethods:
+            - DELETE
+            - GET
+            - HEAD
+            - OPTIONS
+            - PATCH
+            - POST
+            - PUT
+          TargetOriginId: ShopByStyleOrigin
+          ForwardedValues:
+            QueryString: 'false'
+            Headers:
+              - Access-Control-Request-Headers
+              - Access-Control-Request-Method
+              - Origin
+            Cookies:
+              Forward: none
+          ViewerProtocolPolicy: allow-all
+        PriceClass: PriceClass_All
+        ViewerCertificate:
+          CloudFrontDefaultCertificate: 'true'
+  BucketPolicy:
+    Type: 'AWS::S3::BucketPolicy'
+    DependsOn:
+      - WebAssets
+      - CloudFrontOAI
+    Properties:
+      Bucket: !GetAtt 
+        - WebAssets
+        - Outputs.WebAssetsBucket
+      PolicyDocument:
+        Statement:
+          - Action:
+              - 's3:GetObject'
+            Effect: Allow
+            Resource: !Join 
+              - ''
+              - - 'arn:aws:s3:::'
+                - !GetAtt 
+                  - WebAssets
+                  - Outputs.WebAssetsBucket
+                - /*
+            Principal:
+              CanonicalUser: !GetAtt CloudFrontOAI.S3CanonicalUserId
+Outputs:
+  SampleWebPageURL:
+    Description: url to sample shop-by-style webpage
+    Value: !Join 
+      - ''
+      - - 'https://'
+        - !GetAtt CloudFrontWebDistribution.DomainName
+        - /shoerack.html
+    Export:
+      Name: SampleWebPageURL
+  SampleGraphVisURL:
+    Description: url to sample graph visualization webpage
+    Value: !Join 
+      - ''
+      - - 'https://'
+        - !GetAtt CloudFrontWebDistribution.DomainName
+        - /graphvis.html
+    Export:
+      Name: SampleGraphVisURL
