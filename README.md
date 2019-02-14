@@ -2,6 +2,7 @@
 
 A Personalized 'Shop-by-Style' Experience via PyTorch on Amazon SageMaker and Amazon Neptune
 
+![Animated gif](/images/shopbystyle-ui-anim.gif)
 
 <a href="https://console.aws.amazon.com/cloudformation/home?region=us-west-
 2#/stacks/new?stackName=shopbystyle-prototype&templateURL=https://s3-us-west-
