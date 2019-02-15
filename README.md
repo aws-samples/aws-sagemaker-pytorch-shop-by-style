@@ -20,7 +20,7 @@ Two URLs are provided in the Output section of the CloudFormation Template:
 
 ![CF Output](/images/cf_outputs.png)
 
-ShoeRackPageURL links you to the webpage displayed below:
+ShoeRackPageURL links you to the primary web page displayed below:
 
 ![Animated gif](/images/shopbystyle-ui-anim.gif)
 
