@@ -6,7 +6,9 @@ The content in this repository was released as part of a [ML-blog post](https://
 
 The notebook linked [here](https://github.com/aws-samples/aws-sagemaker-pytorch-shop-by-style/blob/master/notebooks/shop-by-style-model-on-pytorch.ipynb) will provide you a hands-on guide of the entire process involved in building the DL model that powers the solution described in the blog post. 
 
-Additonally, I've provided a button below that will deploy a prototype solution in us-west-2 using CloudFormation. There are no post-launch configuration steps required. The template will create IAM roles, network resources like a VPC, a CloudFront distribution, a Neptune database, API Gateway and Lambda resources. Thus, I recommend deploying this solution with admin permissions in a sandbox or personal account.
+Additonally, I've provided a one-click deployment for the prototype solution in us-west-2. There are no post-launch configuration steps required. The template will create resources illustrated in the architecture diagram below along with IAM roles. Thus, I recommend deploying this solution with admin permissions in a sandbox or personal account.
+
+![architecture](images/prototype-architecture.png)
 
 The prototype will work in other regions. However, it will require you to make modifications to the CloudFormation template, and copy the provided assets to the other region.
 
