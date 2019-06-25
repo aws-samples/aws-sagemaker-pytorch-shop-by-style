@@ -37,7 +37,11 @@ GraphVisURL links you to a graph visualization sample page:
 **1. The nested CloudFormation template, microservices.yaml, failed to create. What do I do?**
 
  The most likely issue is a due to the template being out of date. This template launches a Lambda function, which requires the Node.js version runtime to be specified. You can confirm this issue by disabling automatic rollbacks when you launch the template. If you see an error related to the runtime configurations for the Lambda function, update the template with the current runtimes available for Node.js on Lambda.
+ 
+ **2. The response time for the demo webpage "ShoeRack" is choppy. What is the issue?**
 
+ You'll need to warm up the cache. Once you clicked on each image, the images will be cached in CloudFront. The expectations is that most of the images will stay hot in the cache for a large-scale website. There are other optimizations that can be done with the code and database if you want to be less reliant on caching.
+ 
 ## License
 
 This library is licensed under the Apache 2.0 License. 
