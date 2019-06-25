@@ -9,6 +9,7 @@ Parameters:
       Name of an existing EC2 KeyPair to enable SSH access to the instances.
       Required Input
     Type: 'AWS::EC2::KeyPair::KeyName'
+    AllowedPattern : ".+"
     ConstraintDescription: Must be the name of an existing EC2 KeyPair in same region.
   Env:
     Description: 'Environment tag, e.g. prod, nonprod.'
