@@ -32,6 +32,11 @@ GraphVisURL links you to a graph visualization sample page:
 
 ![Graph Viz](/images/graphvis.png)
 
+## FAQ
+
+1. The nested CloudFormation template, microservices.yaml, failed to create, what do I do?
+
+The most likely issue is a due to the template being out of date. This template launches a Lambda function, which requires the Node.js version runtime to be specified. You can confirm this issue by disabling automatic rollbacks when you launch the template. If you see an error related to the runtime configurations for the Lambda function, update the template with the current runtimes available for Node.js on Lambda.
 
 ## License
 
