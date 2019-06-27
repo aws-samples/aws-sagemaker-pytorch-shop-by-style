@@ -85,8 +85,8 @@ Resources:
     Type: 'AWS::Lambda::Function'
     Properties:
       Code:
-        S3Bucket: reinvent2018-sagemaker-pytorch
-        S3Key: cloudformation/blog/shop-by-style/38810787021a45f9f9d5abd4767f86eb
+        S3Bucket: aws-ml-blog-usw2
+        S3Key: artifacts/shop-by-style/cloudformation/38810787021a45f9f9d5abd4767f86eb
       Description: ''
       VpcConfig:
         SubnetIds:
