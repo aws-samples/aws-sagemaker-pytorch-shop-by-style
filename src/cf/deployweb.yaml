@@ -5,7 +5,7 @@ Resources:
       TemplateURL: !Join 
         - ''
         - - >-
-            https://s3-us-west-2.amazonaws.com/reinvent2018-sagemaker-pytorch/cloudformation/blog/shop-by-style/macro.template
+            https://s3-us-west-2.amazonaws.com/aws-ml-blog-usw2/artifacts/shop-by-style/cloudformation/macro.template
       TimeoutInMinutes: '30'
   WebAssets:
     Type: 'AWS::CloudFormation::Stack'
@@ -14,7 +14,7 @@ Resources:
       TemplateURL: !Join 
         - ''
         - - >-
-            https://s3-us-west-2.amazonaws.com/reinvent2018-sagemaker-pytorch/cloudformation/blog/shop-by-style/copy-assets.yaml
+            https://s3-us-west-2.amazonaws.com/aws-ml-blog-usw2/artifacts/shop-by-style/cloudformation/copy-assets.yaml
       TimeoutInMinutes: '30'
   CloudFrontOAI:
     Type: 'AWS::CloudFront::CloudFrontOriginAccessIdentity'
