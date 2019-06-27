@@ -14,7 +14,7 @@ The prototype will work in other regions. However, it will require you to make m
 
 <a href="https://console.aws.amazon.com/cloudformation/home?region=us-west-
 2#/stacks/new?stackName=shopbystyle-prototype&templateURL=https://s3-us-west-
-2.amazonaws.com/reinvent2018-sagemaker-pytorch/cloudformation/blog/shop-by-
+2.amazonaws.com/aws-ml-blog-usw2/cloudformation/shop-by-
 style/shopbystyle-prototype.yaml">
 ![launch stack button](/images/cloudformation-launch-stack.png)</a>
 
