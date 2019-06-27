@@ -14,8 +14,7 @@ The prototype will work in other regions. However, it will require you to make m
 
 <a href="https://console.aws.amazon.com/cloudformation/home?region=us-west-
 2#/stacks/new?stackName=shopbystyle-prototype&templateURL=https://s3-us-west-
-2.amazonaws.com/aws-ml-blog-usw2/cloudformation/shop-by-
-style/shopbystyle-prototype.yaml">
+2.amazonaws.com/aws-ml-blog-usw2/artifacts/shop-by-style/cloudformation/shopbystyle-prototype.yaml">
 ![launch stack button](/images/cloudformation-launch-stack.png)</a>
 
 **Allow the template 45-60 minutes to launch. The prototype restores a Neptune database from a snapshot, which can take 45 minutes. As well, CloudFront will require some time before it can redirect traffic to the designated S3 origin. The reason is explained in the [docs](https://docs.aws.amazon.com/AmazonS3/latest/dev/VirtualHosting.html). If you experience an error loading the web pages, allow 20 minutes for DNS propagation to complete.**
