@@ -40,7 +40,7 @@ Parameters:
     Description: Enter the port of your Neptune cluster
   DBSnapshot:
     Type: String
-    Default: 'arn:aws:rds:us-west-2:777141646116:cluster-snapshot:shopbystyle-blog-public'
+    Default: 'arn:aws:rds:us-west-2:305705277353:cluster-snapshot:shopbystyle-blog-public'
   EC2ClientInstanceType:
     Description: EC2 client instance
     Type: String
