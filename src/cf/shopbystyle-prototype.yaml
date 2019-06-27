@@ -111,7 +111,7 @@ Resources:
       TemplateURL: !Join 
         - ''
         - - >-
-            https://s3-us-west-2.amazonaws.com/reinvent2018-sagemaker-pytorch/cloudformation/blog/shop-by-style/deployweb.yaml
+            https://s3-us-west-2.amazonaws.com/aws-ml-blog-usw2/artifacts/shop-by-style/cloudformation/deployweb.yaml
       TimeoutInMinutes: '120'
   NeptuneStack:
     Type: 'AWS::CloudFormation::Stack'
@@ -119,7 +119,7 @@ Resources:
       TemplateURL: !Join 
         - ''
         - - >-
-            https://s3-us-west-2.amazonaws.com/reinvent2018-sagemaker-pytorch/cloudformation/blog/shop-by-style/neptune.yaml
+            https://s3-us-west-2.amazonaws.com/aws-ml-blog-usw2/artifacts/shop-by-style/cloudformation/neptune.yaml
       TimeoutInMinutes: '120'
       Parameters:
         Env: !Ref Env
@@ -175,7 +175,7 @@ Resources:
       TemplateURL: !Join 
         - ''
         - - >-
-            https://s3-us-west-2.amazonaws.com/reinvent2018-sagemaker-pytorch/cloudformation/blog/shop-by-style/microservices.yaml
+            https://s3-us-west-2.amazonaws.com/aws-ml-blog-usw2/artifacts/shop-by-style/cloudformation/microservices.yaml
       TimeoutInMinutes: '30'
       Parameters:
         Subnet1: !GetAtt 
