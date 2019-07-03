@@ -2,7 +2,7 @@
 
 Contact: [Dylan Tong](mailto:dylatong@amazon.com)
 
-The content in this repository was released as part of a [ML-blog post](https://amazon.awsapps.com/workdocs/index.html#/document/c557cbefa1f643b1ed3aade699052edbc3a1e6192e7c1a4fc24ede027105253f): A personalized 'shop-by-style' experience via PyTorch on Amazon SageMaker and Amazon Neptune.
+The content in this repository was released as part of a [ML-blog post](https://aws.amazon.com/blogs/machine-learning/a-personalized-shop-by-style-experience-using-pytorch-on-amazon-sagemaker-and-amazon-neptune/): A personalized 'shop-by-style' experience via PyTorch on Amazon SageMaker and Amazon Neptune.
 
 The notebook linked [here](https://github.com/aws-samples/aws-sagemaker-pytorch-shop-by-style/blob/master/notebooks/shop-by-style-model-on-pytorch.ipynb) will provide you a hands-on guide of the entire process involved in building the DL model that powers the solution described in the blog post. 
 
