@@ -1,6 +1,7 @@
 ## Shop-by-Style Experience using PyTorch and SageMaker
 
 Contact: [Dylan Tong](mailto:dylatong@amazon.com)
+#Edit by Evaristo
 
 The content in this repository was released as part of a [ML-blog post](https://aws.amazon.com/blogs/machine-learning/a-personalized-shop-by-style-experience-using-pytorch-on-amazon-sagemaker-and-amazon-neptune/): A personalized 'shop-by-style' experience via PyTorch on Amazon SageMaker and Amazon Neptune.
 
