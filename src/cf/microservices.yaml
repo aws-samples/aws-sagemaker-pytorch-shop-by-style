@@ -108,7 +108,7 @@ Resources:
         - LambdaExecutionRole
         - Arn
       Timeout: 60
-      Runtime: nodejs10.x
+      Runtime: nodejs14.x
   ServerlessRestApi:
     Type: 'AWS::ApiGateway::RestApi'
     DependsOn: 
